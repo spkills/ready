@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"flag"
+	"io"
 	"os"
 	"os/exec"
 
@@ -27,6 +28,17 @@ type SqlBoilerConfig struct {
 const (
 	SqlBoilerConfigName = "sqlboiler.toml"
 )
+
+// 終了コード
+const (
+	ExitCodeOK = iota
+	ExitCodeParseFlagError
+	ExitCodeNG
+)
+
+type Ready struct {
+	outStream, errStream io.Writer
+}
 
 func main() {
 	cli := &Ready{outStream: os.Stdout, errStream: os.Stderr}

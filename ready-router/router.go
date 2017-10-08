@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
+	"io"
 	"os"
 	"strings"
 )
@@ -13,6 +14,17 @@ var (
 	file          = flag.String("file", "route.conf", "Path to route.conf file")
 	templatesPath = flag.String("templatesPath", "templates", "Path to route.conf file")
 )
+
+// 終了コード
+const (
+	ExitCodeOK = iota
+	ExitCodeParseFlagError
+	ExitCodeNG
+)
+
+type Ready struct {
+	outStream, errStream io.Writer
+}
 
 type TemplateData struct {
 	Name        string
