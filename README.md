@@ -1,0 +1,2 @@
+# ready
+Init command
