@@ -5,9 +5,9 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-func Test_2GetHandler(ctx *fasthttp.RequestCtx) {
+func TestListGetHandler(ctx *fasthttp.RequestCtx) {
 
-	name := "test_2"
+	name := "test/list"
 
 	ctx.SetContentType("text/html; charset=utf-8")
 	ctx.SetStatusCode(fasthttp.StatusOK)
@@ -15,25 +15,25 @@ func Test_2GetHandler(ctx *fasthttp.RequestCtx) {
 
 }
 
-func Test_2PostHandler(ctx *fasthttp.RequestCtx) {
+func TestListPostHandler(ctx *fasthttp.RequestCtx) {
 	ctx.SetContentType("text/html; charset=utf-8")
 	ctx.SetStatusCode(fasthttp.StatusNotImplemented)
 	fmt.Fprintf(ctx, "NotImplemented")
 }
 
-func Test_2PutHandler(ctx *fasthttp.RequestCtx) {
+func TestListPutHandler(ctx *fasthttp.RequestCtx) {
 	ctx.SetContentType("text/html; charset=utf-8")
 	ctx.SetStatusCode(fasthttp.StatusNotImplemented)
 	fmt.Fprintf(ctx, "NotImplemented")
 }
 
-func Test_2DeleteHandler(ctx *fasthttp.RequestCtx) {
+func TestListDeleteHandler(ctx *fasthttp.RequestCtx) {
 	ctx.SetContentType("text/html; charset=utf-8")
 	ctx.SetStatusCode(fasthttp.StatusNotImplemented)
 	fmt.Fprintf(ctx, "NotImplemented")
 }
 
-func Test_2HeadHandler(ctx *fasthttp.RequestCtx) {
+func TestListHeadHandler(ctx *fasthttp.RequestCtx) {
 	ctx.SetContentType("text/html; charset=utf-8")
 	ctx.SetStatusCode(fasthttp.StatusOK)
 	fmt.Fprintf(ctx, "")
