@@ -29,6 +29,7 @@ type Ready struct {
 type TemplateData struct {
 	Name        string
 	CapitalName string
+	CamelName   string
 }
 
 func main() {
@@ -52,20 +53,40 @@ func (r *Ready) Create(args []string) int {
 		return ExitCodeParseFlagError
 	}
 
-	files := make([]string, 0, 10)
 	scanner := bufio.NewScanner(fp)
+
+	dataList := make([]TemplateData, 0, 10)
 	for scanner.Scan() {
-		filename := scanner.Text()
-		files = append(files, filename)
-		r.createHandler(filename, inDir)
+
+		path := scanner.Text()
+		separatedPath := strings.Split(path, "/")
+		titledPath := strings.Replace(strings.Title(strings.Join(separatedPath, " ")), " ", "", -1)
+
+		filename := ""
+		for i, v := range separatedPath {
+			if i == 0 {
+				filename += v
+				continue
+			}
+			filename += strings.Title(v)
+		}
+
+		data := TemplateData{
+			Name:        path,
+			CapitalName: titledPath,
+			CamelName:   filename,
+		}
+
+		dataList = append(dataList, data)
+		r.createHandler(data, inDir)
 
 	}
-	r.createRoutingFile(inDir, files)
+	r.createRoutingFile(inDir, dataList)
 
 	return ExitCodeOK
 }
 
-func (r *Ready) createRoutingFile(inDir string, funcs []string) {
+func (r *Ready) createRoutingFile(inDir string, dataList []TemplateData) {
 	outfile := "controller/routing.go"
 
 	//execute template
@@ -76,28 +97,16 @@ func (r *Ready) createRoutingFile(inDir string, funcs []string) {
 	}
 
 	tpl := template.Must(template.ParseFiles(inDir + "/routing.tmpl"))
-
-	var data []TemplateData
-	for _, v := range funcs {
-
-		data = append(data,
-			TemplateData{
-				Name:        v,
-				CapitalName: strings.Title(v),
-			},
-		)
-	}
-
-	err = tpl.Execute(outf, data)
+	err = tpl.Execute(outf, dataList)
 	if err != nil {
 		panic(err)
 	}
 }
 
-func (r *Ready) createHandler(filename, inDir string) {
+func (r *Ready) createHandler(data TemplateData, inDir string) {
 
-	outfile := "controller/" + filename + ".go"
-	fmt.Printf("Compiling %q to %q...\n", filename, outfile)
+	outfile := "controller/" + data.CamelName + ".go"
+	fmt.Printf("Compiling %q to %q...\n", data.CamelName, outfile)
 
 	if r.fileExists(outfile) {
 		fmt.Println("file exists")
@@ -112,11 +121,6 @@ func (r *Ready) createHandler(filename, inDir string) {
 
 	//execute template
 	tpl := template.Must(template.ParseFiles(inDir + "/handler.tmpl"))
-
-	data := TemplateData{
-		Name:        filename,
-		CapitalName: strings.Title(filename),
-	}
 
 	err = tpl.Execute(outf, data)
 	if err != nil {
